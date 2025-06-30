@@ -1,0 +1,13 @@
+<<<<<<< HEAD
+{
+  "buildCommand": "npm install --legacy-peer-deps && npm run build",
+  "outputDirectory": "out",
+  "framework": "nextjs"
+}
+=======
+{
+  "buildCommand": "npm install --legacy-peer-deps && npm run build",
+  "outputDirectory": "out",
+  "framework": "nextjs"
+}
+>>>>>>> 3822a1007044104af3d200f6dcb5fe885d8a8c76
