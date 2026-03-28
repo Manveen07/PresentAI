@@ -130,7 +130,7 @@ export const getProjectById = async (projectId: string) => {
     if (!project) {
       return { status: 404, error: "Project not found" };
     }
-    return { status: 200, data: project, isOwned };
+    return { status: 200, data: { ...project, isOwned: isOwned } };
   } catch (error) {
     console.log("⚠️Error", error);
     return { status: 500, error: "Internal Server Error" };

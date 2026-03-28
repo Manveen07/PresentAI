@@ -27,7 +27,7 @@ function Page() {
     (async () => {
       try {
         const res = await getProjectById(params.presentationid as string);
-        const isowned = res.data?.isOwned;
+        const isowned = res.data?.isOwned === true;
         if (res.status !== 200 || !res.data) {
           toast.error("Error", {
             description: "Unable to fetch Project",

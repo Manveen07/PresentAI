@@ -78,8 +78,8 @@ const ImageComponent = ({
     <div className={`relative group w-full h-full rounded-lg`}>
       <Image
         src={src}
-        width={isPreview ? 48 : 800}
-        height={isPreview ? 48 : 800}
+        width={isPreview ? 400 : 800}
+        height={isPreview ? 400 : 800}
         alt={alt}
         className={`object-cover w-full h-full rounded-lg ${className}`}
       />

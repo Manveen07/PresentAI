@@ -34,7 +34,7 @@ const ThumbnailPreview = ({ slide, theme }: Props) => {
         </div>
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gray-600">
-          <Image className="w-6 h-6 text-gray-500" alt="Placeholder icon" />
+          <Image className="w-6 h-6 text-gray-500" />
         </div>
       )}
     </div>

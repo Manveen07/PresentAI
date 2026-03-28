@@ -2,14 +2,12 @@
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
-import dotenv from "dotenv";
-dotenv.config();
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { currentUser } from "@clerk/nextjs/server";
 import { client } from "@/lib/prisma";
 import { ContentItem, ContentType, Slide } from "@/lib/types";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+// Removed top-level initialization to ensure fresh env variables per call
 
 export const generateCreativePrompt = async (userPrompt: string) => {
   const systemInstruction =
@@ -35,6 +33,7 @@ export const generateCreativePrompt = async (userPrompt: string) => {
       throw new Error("GEMINI_API_KEY environment variable is not set.");
     }
 
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({
       model: "gemini-2.0-flash",
       generationConfig: {
@@ -42,6 +41,8 @@ export const generateCreativePrompt = async (userPrompt: string) => {
         temperature: 0.7,
       },
     });
+
+    console.log("🚀 Calling Gemini for Outline with model: gemini-2.0-flash");
 
     const result = await model.generateContent({
       contents: [
@@ -56,7 +57,7 @@ export const generateCreativePrompt = async (userPrompt: string) => {
       ],
     });
 
-    const text = await result.response.text();
+    const text = result.response.text();
     const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/);
     const cleanText = jsonMatch ? jsonMatch[1] : text; // Extract JSON part
 
@@ -565,7 +566,7 @@ export const generateLayouts = async (projectId: string, theme: string) => {
     }
     await client.project.update({
       where: { id: projectId },
-      data: { slides: layouts.data, themeName: theme },
+      data: { slides: layouts.data as any, themeName: theme },
     });
     return { status: 200, data: layouts.data };
   } catch (error) {
@@ -589,44 +590,102 @@ const findImageComponents = (layout: ContentItem): ContentItem[] => {
   return images;
 };
 
-const generateImage = async (prompt: string) => {
+// const generateImage = async (prompt: string) => {
+//   try {
+
+//     // Improve prompt
+//     const improvedPrompt = `
+//     ${prompt}, highly realistic, professional quality, cinematic lighting, photorealistic, ultra-detailed, 8K, dramatic shadows, high texture fidelity, depth of field, DSLR shot, studio quality.
+//     `;
+
+//     const response = await axios.post(
+//       "https://api.stability.ai/v2beta/stable-image/generate/core",
+//       {
+//         prompt: improvedPrompt,
+//         output_format: "url",
+//         style_preset: "photographic", // Choose "cinematic", "realistic", etc.
+//         width: 1024,
+//         height: 1024,
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${process.env.STABILITY_AI_API_KEY}`,
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
+
+//     console.log("✅ Image URL:", response.data.image);
+//     return (
+//       response.data.image ||
+//       "https://images.unsplash.com/photo-1620330400227-a051f6af31cb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+//     );
+//   } catch (error) {
+//     if (error instanceof Error) {
+//       console.error("❌ Error generating image:", error.message);
+//     } else {
+//       console.error("❌ Error generating image:", error);
+//     }
+//     return "https://images.unsplash.com/photo-1620330400227-a051f6af31cb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+//   }
+// };
+
+const searchPexelsImage = async (query:string
+) => {
+  const apiKey = process.env.PEXELS_API_KEY;
+
+  // --- DEBUGGING STEP 1: Check if API Key and query exist ---
+  console.log(`Attempting to search Pexels for: "${query}"`);
+
+  if (!apiKey) {
+    console.error("❌ CRITICAL: PEXELS_API_KEY is not defined. Make sure it's in your .env file and that dotenv is configured.");
+    return "https://placehold.co/1024x1024/f87171/ffffff?text=API+Key+Missing";
+  }
+
+  if (!query || query.trim() === "") {
+    console.warn("⚠️ Search query is empty. Returning a fallback image.");
+    return "https://images.unsplash.com/photo-1620330400227-a051f6af31cb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+  }
+
   try {
-    // Improve prompt
-    const improvedPrompt = `
-    ${prompt}, highly realistic, professional quality, cinematic lighting, photorealistic, ultra-detailed, 8K, dramatic shadows, high texture fidelity, depth of field, DSLR shot, studio quality.
-    `;
-
-    const response = await axios.post(
-      "https://api.stability.ai/v2beta/stable-image/generate/core",
-      {
-        prompt: improvedPrompt,
-        output_format: "url",
-        style_preset: "photographic", // Choose "cinematic", "realistic", etc.
-        width: 1024,
-        height: 1024,
+    const url = "https://api.pexels.com/v1/search";
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: apiKey,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.STABILITY_AI_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+      params: {
+        query: query,
+        per_page: 1,
+        orientation: 'landscape',
+      },
+    });
 
-    console.log("✅ Image URL:", response.data.image);
-    return (
-      response.data.image ||
-      "https://images.unsplash.com/photo-1620330400227-a051f6af31cb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-    );
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error("❌ Error generating image:", error.message);
+    if (response.data?.photos?.length > 0) {
+      const imageUrl = response.data.photos[0].src.original;
+      console.log("✅ Pexels Image URL:", imageUrl);
+      return imageUrl;
     } else {
-      console.error("❌ Error generating image:", error);
+      console.warn(`⚠️ No images found for query: "${query}"`);
+      return "https://images.unsplash.com/photo-1620330400227-a051f6af31cb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
     }
+
+  } catch (error) {
+    console.error("❌ An error occurred while calling the Pexels API.");
+    
+    // --- DEBUGGING STEP 2: Log the detailed error from the API ---
+    if (axios.isAxiosError(error)) {
+      console.error("    Error Details: The API responded with:");
+      console.error(`    - Status: ${error.response?.status}`);
+      // This part is crucial - it will print the exact error message from Pexels
+      console.error(`    - Data:`, error.response?.data); 
+    } else {
+      console.error("    A non-network error occurred:", (error as Error).message);
+    }
+    
     return "https://images.unsplash.com/photo-1620330400227-a051f6af31cb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
   }
 };
+
 
 const replaceImagePlaceholders = async (layout: Slide) => {
   const imageComponents = findImageComponents(layout.content);
@@ -635,7 +694,7 @@ const replaceImagePlaceholders = async (layout: Slide) => {
   for (const component of imageComponents) {
     console.log("● Generating image for component:", component.alt);
     try {
-      component.content = await generateImage(
+      component.content = await searchPexelsImage(
         component.alt || "Placeholder Image"
       );
     } catch (error) {
@@ -750,7 +809,6 @@ const replaceImagePlaceholders = async (layout: Slide) => {
 // };
 
 const generateLayoutJson = async (outlineArray: string[]) => {
-  const MODEL_NAME = "gemini-2.0-flash";
   const API_KEY = process.env.GEMINI_API_KEY;
 
   if (!API_KEY) {
@@ -758,7 +816,15 @@ const generateLayoutJson = async (outlineArray: string[]) => {
   }
 
   const genAI = new GoogleGenerativeAI(API_KEY);
-  const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+  const model = genAI.getGenerativeModel({ 
+    model: "gemini-2.0-flash",
+    generationConfig: {
+      temperature: 0.7,
+      maxOutputTokens: 5000,
+    }
+  });
+
+  console.log("🚀 Calling Gemini for JSON Layout with model: gemini-2.0-flash");
 
   // Prepare the prompt with strict formatting instructions
   const systemInstruction2 =
@@ -854,6 +920,9 @@ Now, for each entry in the outline array:
     // Remove any potential markdown code blocks
     cleanText = cleanText.replace(/```(json)?/g, "");
 
+
+    
+
     // Extract just the JSON portion
     const jsonStart = cleanText.indexOf("[");
     const jsonEnd = cleanText.lastIndexOf("]");
@@ -863,6 +932,13 @@ Now, for each entry in the outline array:
     }
 
     cleanText = cleanText.slice(jsonStart, jsonEnd + 1);
+
+    // =================================================================
+    // TEMPORARY DEBUGGING LOG: Log the exact string before parsing
+    console.log("--- Attempting to parse the following JSON text: ---");
+    console.log(cleanText);
+    console.log("-----------------------------------------------------");
+    // =================================================================
 
     // Validate JSON structure before parsing
     const jsonResponse = JSON.parse(cleanText);

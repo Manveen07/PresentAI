@@ -35,7 +35,8 @@ function Navbar({ presentationId }: Props) {
   useEffect(() => {
     (async () => {
       try {
-        const isOwned = (await getProjectById(presentationId)).isOwned;
+        const projectResponse = await getProjectById(presentationId);
+        const isOwned = projectResponse.data?.isOwned === true;
         setIsOwned(isOwned);
         // console.log("Is Owned:", isOwned);
       } catch (error) {
