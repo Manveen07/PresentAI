@@ -33,29 +33,29 @@ export const Hero = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <h1 className="text-6xl md:text-8xl font-black tracking-tightest mb-6 leading-[0.85] text-white">
-            From one sentence <br/>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tightest mb-6 leading-[0.9] sm:leading-[0.85] text-white px-2">
+            From one sentence <br className="hidden sm:inline"/>
             <span className="text-slate-500 font-medium">to a full presentation.</span>
           </h1>
-          <p className="max-w-xl mx-auto text-lg text-slate-500 mb-10 font-medium leading-relaxed">
-            Generate structures, narratives, and professional layouts in seconds. 
+          <p className="max-w-xl mx-auto text-base sm:text-lg text-slate-500 mb-10 font-medium leading-relaxed px-4">
+            Generate structures, narratives, and professional layouts in seconds.
             The most direct path from prompt to pitch.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button 
-                onClick={() => router.push("/sign-up")} 
+            <Button
+                onClick={() => router.push("/sign-up")}
                 size="lg"
                 className="h-12 px-8 bg-white text-black hover:bg-slate-200 rounded-full font-bold shadow-2xl transition-all group"
             >
-                Get Started
+                Start for Free
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button 
-                variant="ghost" 
-                onClick={() => router.push("/sign-up")} 
-                className="text-slate-400 hover:text-white font-bold"
+            <Button
+                variant="ghost"
+                asChild
+                className="text-slate-400 hover:text-white hover:bg-white/5 font-bold"
             >
-                Try for free
+                <a href="#how-it-works">See how it works</a>
             </Button>
           </div>
         </motion.div>

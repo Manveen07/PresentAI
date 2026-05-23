@@ -20,7 +20,7 @@ export const HowItWorks = () => {
   ];
 
   return (
-    <section className="py-24 px-6 border-y border-white/[0.03] bg-black/[0.02]">
+    <section id="how-it-works" className="py-24 px-6 border-y border-white/[0.03] bg-black/[0.02] scroll-mt-16">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row gap-16 md:gap-12">
            {steps.map((step, i) => (
