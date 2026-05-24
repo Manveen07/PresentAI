@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PresentAI — One Sentence to a Full Presentation
 
-## Getting Started
+AI-powered presentation generator. Type a prompt, get a structured deck with narrative, layouts, and imagery. Drag-and-drop editor on top. Export to PDF / PPTX.
 
-First, run the development server:
+![demo](docs/demo.gif)
 
+## Why
+Most "AI slide" tools produce a wall of bullet points and call it a deck. PresentAI generates a real narrative arc — sections, transitions, layout variety — then lets you edit every block instead of regenerating the whole thing.
+
+## How it works
+Prompt → Gemini drafts outline + per-slide content → layout engine picks a template per slide → Pexels pulls relevant imagery → Zustand store hydrates the editor → user fine-tunes in drag-and-drop canvas → export.
+
+## Where it fails
+- Long prompts (>500 chars) sometimes truncate mid-section because the model context budget gets eaten by the JSON schema overhead.
+- Image search returns nothing for niche topics (e.g. "L2 cache prefetch heuristics") so slides fall back to a gradient placeholder.
+- Theme switching after content is generated occasionally desyncs nested component styles — known issue with the Zustand selector on `themeName`.
+
+## Stack
+Next.js 15, React 19 RC, TypeScript, Tailwind, shadcn/ui, Prisma + Postgres, Clerk auth, Google Gemini 2.0 Flash, Pexels API, Uploadcare, Lemon Squeezy subscriptions, Vercel hosting.
+
+## Run locally
 ```bash
+git clone https://github.com/Manveen07/PresentAI
+cd PresentAI
+npm install --legacy-peer-deps
+cp .env.example .env          # fill in keys below
+npx prisma generate
+npx prisma db push
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Required env vars
+```
+DATABASE_URL=                          # Postgres connection string
+CLERK_SECRET_KEY=                      # from clerk.com
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+GEMINI_API_KEY=                        # from aistudio.google.com/apikey
+PEXELS_API_KEY=                        # from pexels.com/api
+NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY=     # from uploadcare.com
+LEMON_SQUEEZY_API_KEY=                 # from app.lemonsqueezy.com
+LEMON_SQUEEZY_STORE_ID=
+LEMON_SQUEEZY_VARIANT_ID=
+LEMON_SQUEEZY_WEBHOOK_SECRET=          # 40-char hex, same value as in Lemon Squeezy webhook config
+NEXT_PUBLIC_HOST_URL=http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## What I'd do next
+- Streaming generation — render slides as they come back from Gemini instead of waiting for the full deck.
+- Eval harness for output quality: structured rubric on narrative flow, factuality, slide-density.
+- Brand kit upload (logo, palette, font) → feed into layout engine so generated decks match the user's identity.
+- Swap Gemini for a smaller fine-tuned model on slide-structure data to cut per-deck cost.
