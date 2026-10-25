@@ -1,53 +1,47 @@
-# PresentAI — One Sentence to a Full Presentation
+# PresentAI
 
-AI-powered presentation generator. Type a prompt, get a structured deck with narrative, layouts, and imagery. Drag-and-drop editor on top. Export to PDF / PPTX.
+Type a one-line topic and get a first-draft slide deck with photos, then change anything in a drag-and-drop editor. For anyone who needs slides fast and would rather fix a draft than start from a blank page.
 
-![demo](docs/demo.gif)
+![Five steps: you type a topic, Gemini writes an outline you can edit, Gemini turns each point into a slide, Pexels adds a photo to each image block, and you finish the deck in the editor](docs/how-it-works.png)
 
-## Why
-Most "AI slide" tools produce a wall of bullet points and call it a deck. PresentAI generates a real narrative arc — sections, transitions, layout variety — then lets you edit every block instead of regenerating the whole thing.
+**Stack:** Next.js 15, TypeScript, Tailwind, Zustand, Prisma with Postgres, Clerk login, Gemini 2.0 Flash, Pexels. **Status:** personal project, 2025 to 2026. The AI step is down until its Gemini model is updated (see Limits).
+
+## What it does
+
+- Writes an outline of six or more points from your topic. You edit, reorder and add points before any slides are made.
+- Turns each point into a slide with a heading, text and, where it fits, a stock photo.
+- Lets you edit the deck: drag in layouts and blocks (text, lists, tables, quotes, images), reorder slides, switch between 25 themes. Changes save on their own.
+- Plays the deck as a slideshow in the browser.
 
 ## How it works
-Prompt → Gemini drafts outline + per-slide content → layout engine picks a template per slide → Pexels pulls relevant imagery → Zustand store hydrates the editor → user fine-tunes in drag-and-drop canvas → export.
 
-## Where it fails
-- Long prompts (>500 chars) sometimes truncate mid-section because the model context budget gets eaten by the JSON schema overhead.
-- Image search returns nothing for niche topics (e.g. "L2 cache prefetch heuristics") so slides fall back to a gradient placeholder.
-- Theme switching after content is generated occasionally desyncs nested component styles — known issue with the Zustand selector on `themeName`.
+1. **Outline.** One call to Gemini 2.0 Flash returns the outline as JSON (a structured text format).
+2. **Slides.** A second Gemini call writes every slide at once as layout JSON: a tree of blocks such as columns, headings, paragraphs and images. The prompt shows it 8 built-in layouts as examples.
+3. **Photos.** The code finds each image block and searches Pexels (a free stock photo library) with the block's description.
+4. **Editor.** The deck loads into a Zustand store (state the editor's panels share). Edits are saved to Postgres 2 seconds after you stop.
 
-## Stack
-Next.js 15, React 19 RC, TypeScript, Tailwind, shadcn/ui, Prisma + Postgres, Clerk auth, Google Gemini 2.0 Flash, Pexels API, Uploadcare, Lemon Squeezy subscriptions, Vercel hosting.
+## Run it
 
-## Run locally
 ```bash
 git clone https://github.com/Manveen07/PresentAI
 cd PresentAI
 npm install --legacy-peer-deps
-cp .env.example .env          # fill in keys below
 npx prisma generate
 npx prisma db push
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+First create a `.env` file with `DATABASE_URL` (Postgres), `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `GEMINI_API_KEY`, `PEXELS_API_KEY` and `NEXT_PUBLIC_HOST_URL=http://localhost:3000`. Payments also need the four `LEMON_SQUEEZY_*` keys.
 
-### Required env vars
-```
-DATABASE_URL=                          # Postgres connection string
-CLERK_SECRET_KEY=                      # from clerk.com
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-GEMINI_API_KEY=                        # from aistudio.google.com/apikey
-PEXELS_API_KEY=                        # from pexels.com/api
-NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY=     # from uploadcare.com
-LEMON_SQUEEZY_API_KEY=                 # from app.lemonsqueezy.com
-LEMON_SQUEEZY_STORE_ID=
-LEMON_SQUEEZY_VARIANT_ID=
-LEMON_SQUEEZY_WEBHOOK_SECRET=          # 40-char hex, same value as in Lemon Squeezy webhook config
-NEXT_PUBLIC_HOST_URL=http://localhost:3000
-```
+Making a deck needs a paid account: the app checks the `subscription` flag on your user row. To try it locally, set the flag to true in `npx prisma studio`.
 
-## What I'd do next
-- Streaming generation — render slides as they come back from Gemini instead of waiting for the full deck.
-- Eval harness for output quality: structured rubric on narrative flow, factuality, slide-density.
-- Brand kit upload (logo, palette, font) → feed into layout engine so generated decks match the user's identity.
-- Swap Gemini for a smaller fine-tuned model on slide-structure data to cut per-deck cost.
+## Limits
+
+- **The AI step is down.** The code calls `gemini-2.0-flash`, which Google [shut down on 1 June 2026](https://ai.google.dev/gemini-api/docs/changelog). Generation fails until the model name in `src/actions/openai.ts` is changed to a current one.
+- **No export yet.** The landing page mentions PDF and PPTX export, but the code has none.
+- **Long decks can fail.** All slides come back in one reply capped at 5,000 tokens. A reply that gets cut off isn't valid JSON, so nothing is saved.
+- **Weak photo fallback.** When Pexels finds nothing, which is common for niche topics, the slide gets the same fixed stock photo whatever the topic.
+- **Theme changes.** Switching the theme after a deck is made sometimes leaves nested blocks in the old style.
+- **Half-built extras.** Share links point to a `/share` page that doesn't exist yet, and the button to buy a deck template is a stub.
+
+Built by [Manveen Singh](https://manveen.me)

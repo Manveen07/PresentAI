@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PresentAI: how a deck gets made</title>
+<!-- README picture for PresentAI, in the manveen.me look. 25 Oct 2026.
+     Every fact is from the code: src/actions/openai.ts (two Gemini calls: outline with 6+ points, then all slides as
+     layout JSON modelled on 8 example layouts; Pexels search per image block on its alt text), CardList.tsx (edit,
+     drag, add outline cards), Editor.tsx (autosave after 2 s), src/lib/constant.ts (25 themes).
+     Render (Windows paths): msedge --headless=new --disable-gpu --hide-scrollbars --allow-file-access-from-files
+     --force-device-scale-factor=2 --window-size=800,388 --virtual-time-budget=8000
+     --screenshot=docs\how-it-works.png file:///.../docs/how-it-works.html -->
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;500&display=block" rel="stylesheet">
+<style>
+  :root { --paper:#f4f1ea; --wash:#ebe6da; --ink:#1d1d1d; --dim:#5a5750; --red:#c4161c; --rule:#d9d3c5; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 800px; height: 388px; background: var(--paper); color: var(--ink); font-family: Archivo, Arial, sans-serif; overflow: hidden; }
+  .page { padding: 30px 36px 0; }
+  .label { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+  h1 { font-weight: 800; font-size: 30px; letter-spacing: -0.02em; margin: 8px 0 22px; }
+  .row { display: flex; align-items: stretch; gap: 5px; }
+  .arr { display: flex; align-items: center; color: var(--dim); font-size: 15px; width: 12px; justify-content: center; }
+  .card { flex: 1; background: #fbf9f4; border: 1px solid var(--rule); border-radius: 10px; padding: 14px 11px 12px; display: flex; flex-direction: column; min-height: 214px; }
+  .num { width: 22px; height: 22px; border-radius: 50%; background: var(--red); color: #fff; font-weight: 800; font-size: 12px; display: grid; place-items: center; box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--red); }
+  h2 { font-size: 15px; font-weight: 800; line-height: 1.2; margin: 12px 0 6px; letter-spacing: -0.01em; }
+  .what { font-size: 12.5px; line-height: 1.42; color: #3b3934; }
+  .who { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--rule); font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
+  .who b { color: var(--red); font-weight: 500; }
+  .foot { margin: 16px 0 0; font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--dim); }
+  .foot b { color: var(--ink); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label">PresentAI &nbsp;·&nbsp; how a deck gets made</div>
+  <h1>From a one-line topic to a deck you can edit</h1>
+  <div class="row">
+    <div class="card">
+      <div class="num">1</div>
+      <h2>Topic</h2>
+      <p class="what">You type what the deck is about, in one line.</p>
+      <div class="who">Done by <b>you</b></div>
+    </div>
+    <div class="arr">→</div>
+    <div class="card">
+      <div class="num">2</div>
+      <h2>Outline</h2>
+      <p class="what">Six or more points, one per slide. You edit, drag and add points before going on.</p>
+      <div class="who">Done by <b>Gemini</b></div>
+    </div>
+    <div class="arr">→</div>
+    <div class="card">
+      <div class="num">3</div>
+      <h2>Slides</h2>
+      <p class="what">Each point becomes a slide, written as layout data modelled on 8 built-in layouts.</p>
+      <div class="who">Done by <b>Gemini</b></div>
+    </div>
+    <div class="arr">→</div>
+    <div class="card">
+      <div class="num">4</div>
+      <h2>Photos</h2>
+      <p class="what">Each image block's description is searched. The first landscape photo goes in.</p>
+      <div class="who">Done by <b>Pexels</b></div>
+    </div>
+    <div class="arr">→</div>
+    <div class="card">
+      <div class="num">5</div>
+      <h2>Editor</h2>
+      <p class="what">Drag in blocks, reorder slides, pick one of 25 themes. Saves as you go.</p>
+      <div class="who">Done by <b>you</b></div>
+    </div>
+  </div>
+  <div class="foot"><b>2 Gemini calls per deck:</b> one for the outline, one for every slide at once.</div>
+</div>
+</body>
+</html>
