@@ -4,7 +4,7 @@ Type a one-line topic and get a first-draft slide deck with photos, then change 
 
 ![Five steps: you type a topic, Gemini writes an outline you can edit, Gemini turns each point into a slide, Pexels adds a photo to each image block, and you finish the deck in the editor](docs/how-it-works.png)
 
-**Stack:** Next.js 15, TypeScript, Tailwind, Zustand, Prisma with Postgres, Clerk login, Gemini 2.0 Flash, Pexels. **Status:** personal project, 2025 to 2026. The AI step is down until its Gemini model is updated (see Limits).
+**Stack:** Next.js 15, TypeScript, Tailwind, Zustand, Prisma with Postgres, Clerk login, Gemini 3.6 Flash, Pexels. **Status:** personal project, 2025 to 2026. The AI step has not been re-tested since its Gemini model was updated (see Limits).
 
 ## What it does
 
@@ -15,7 +15,7 @@ Type a one-line topic and get a first-draft slide deck with photos, then change 
 
 ## How it works
 
-1. **Outline.** One call to Gemini 2.0 Flash returns the outline as JSON (a structured text format).
+1. **Outline.** One call to Gemini 3.6 Flash returns the outline as JSON (a structured text format).
 2. **Slides.** A second Gemini call writes every slide at once as layout JSON: a tree of blocks such as columns, headings, paragraphs and images. The prompt shows it 8 built-in layouts as examples.
 3. **Photos.** The code finds each image block and searches Pexels (a free stock photo library) with the block's description.
 4. **Editor.** The deck loads into a Zustand store (state the editor's panels share). Edits are saved to Postgres 2 seconds after you stop.
@@ -37,7 +37,7 @@ Making a deck needs a paid account: the app checks the `subscription` flag on yo
 
 ## Limits
 
-- **The AI step is down.** The code calls `gemini-2.0-flash`, which Google [shut down on 1 June 2026](https://ai.google.dev/gemini-api/docs/changelog). Generation fails until the model name in `src/actions/openai.ts` is changed to a current one.
+- **The AI step is not re-tested.** The code called `gemini-2.0-flash`, which Google [shut down on 1 June 2026](https://ai.google.dev/gemini-api/docs/deprecations). On 25 October 2026 it was switched to `gemini-3.6-flash`, the replacement Google lists, but no deck has been generated since.
 - **No export yet.** The landing page mentions PDF and PPTX export, but the code has none.
 - **Long decks can fail.** All slides come back in one reply capped at 5,000 tokens. A reply that gets cut off isn't valid JSON, so nothing is saved.
 - **Weak photo fallback.** When Pexels finds nothing, which is common for niche topics, the slide gets the same fixed stock photo whatever the topic.

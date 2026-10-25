@@ -35,14 +35,14 @@ export const generateCreativePrompt = async (userPrompt: string) => {
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-3.6-flash",
       generationConfig: {
         maxOutputTokens: 1000,
         temperature: 0.7,
       },
     });
 
-    console.log("🚀 Calling Gemini for Outline with model: gemini-2.0-flash");
+    console.log("🚀 Calling Gemini for Outline with model: gemini-3.6-flash");
 
     const result = await model.generateContent({
       contents: [
@@ -755,7 +755,7 @@ const replaceImagePlaceholders = async (layout: Slide) => {
 //   try {
 //     console.log("Generating layout JSON with prompt:", prompt);
 //     const model = genAI.getGenerativeModel({
-//       model: "gemini-2.0-flash",
+//       model: "gemini-3.6-flash",
 //       generationConfig: {
 //         maxOutputTokens: 5000,
 //         temperature: 0.7,
@@ -817,14 +817,14 @@ const generateLayoutJson = async (outlineArray: string[]) => {
 
   const genAI = new GoogleGenerativeAI(API_KEY);
   const model = genAI.getGenerativeModel({ 
-    model: "gemini-2.0-flash",
+    model: "gemini-3.6-flash",
     generationConfig: {
       temperature: 0.7,
       maxOutputTokens: 5000,
     }
   });
 
-  console.log("🚀 Calling Gemini for JSON Layout with model: gemini-2.0-flash");
+  console.log("🚀 Calling Gemini for JSON Layout with model: gemini-3.6-flash");
 
   // Prepare the prompt with strict formatting instructions
   const systemInstruction2 =
