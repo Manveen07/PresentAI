@@ -29,10 +29,9 @@ export default function TermsPage() {
       <section className="space-y-3">
         <h2 className="text-xl font-bold text-white">2. The service</h2>
         <p className="text-sm leading-relaxed">
-          PresentAI provides AI-assisted tools to generate, edit, and export
-          presentation slides. The free tier includes a limited monthly quota.
-          The Pro tier unlocks unlimited generations and additional features
-          listed on the pricing page.
+          PresentAI provides AI-assisted tools to generate and edit
+          presentation slides. It is a personal project: making decks is open
+          to invited accounts only.
         </p>
       </section>
 

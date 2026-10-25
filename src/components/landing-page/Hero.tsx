@@ -3,11 +3,9 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Layout, MousePointer2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export const Hero = () => {
-  const router = useRouter();
   const [displayText, setDisplayText] = useState("");
   const fullText = "The future of remote work and digital collaboration...";
 
@@ -43,12 +41,14 @@ export const Hero = () => {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
-                onClick={() => router.push("/sign-up")}
+                asChild
                 size="lg"
                 className="h-12 px-8 bg-white text-black hover:bg-slate-200 rounded-full font-bold shadow-2xl transition-all group"
             >
-                Start for Free
-                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <a href="https://github.com/Manveen07/PresentAI">
+                  View the code
+                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </a>
             </Button>
             <Button
                 variant="ghost"
@@ -58,6 +58,9 @@ export const Hero = () => {
                 <a href="#how-it-works">See how it works</a>
             </Button>
           </div>
+          <p className="mt-6 text-xs text-slate-600 font-medium px-4">
+            A personal project by Manveen Singh. Making decks is open to invited accounts only.
+          </p>
         </motion.div>
 
         {/* Product Showcase - CSS Based Mockup */}

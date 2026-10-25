@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 
 const navLinks = [
   { href: "/#how-it-works", label: "How it works" },
-  { href: "/#pricing", label: "Pricing" },
   { href: "/#faq", label: "FAQ" },
 ];
 
@@ -49,11 +48,11 @@ export const Navbar = () => {
             Log In
           </button>
           <Button
-            onClick={() => router.push("/sign-up")}
+            asChild
             size="sm"
             className="h-8 px-5 bg-white text-black hover:bg-slate-200 transition-colors rounded-full text-[10px] font-black uppercase tracking-widest"
           >
-            Get Started
+            <a href="https://github.com/Manveen07/PresentAI">View code</a>
           </Button>
         </div>
       </div>

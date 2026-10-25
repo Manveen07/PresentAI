@@ -21,16 +21,8 @@ const faqs = [
     a: "Not yet. You edit the deck in the browser and present it as a slideshow from there.",
   },
   {
-    q: "What happens to my free quota each month?",
-    a: "The free tier resets on the first of each calendar month. Unused generations do not roll over.",
-  },
-  {
-    q: "Can I cancel anytime?",
-    a: "Yes. Cancel from your account settings in one click. Your Pro features stay active until the end of the current billing period, then you drop back to the free tier with no charge.",
-  },
-  {
-    q: "Do you offer refunds?",
-    a: "We review refund requests within 14 days of payment on a case-by-case basis. Reach out to support@presentai.app and we will sort it out.",
+    q: "Can I try it?",
+    a: "PresentAI is a personal project, so making decks is open to invited accounts only. The code is on GitHub at github.com/Manveen07/PresentAI.",
   },
 ];
 
