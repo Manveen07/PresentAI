@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import { Navbar } from "@/components/landing-page/Navbar";
 import { Hero } from "@/components/landing-page/Hero";
 import { HowItWorks } from "@/components/landing-page/HowItWorks";
-import { SocialProof } from "@/components/landing-page/SocialProof";
 import { Pricing } from "@/components/landing-page/Pricing";
 import { FAQ } from "@/components/landing-page/FAQ";
 import { Footer } from "@/components/landing-page/Footer";
@@ -40,7 +39,6 @@ export default function Home() {
       <main className="relative z-10">
         <Hero />
         <HowItWorks />
-        <SocialProof />
         <Pricing />
         <FAQ />
       </main>

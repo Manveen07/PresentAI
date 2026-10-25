@@ -17,8 +17,8 @@ const faqs = [
     a: "Yes. Every slide is fully editable in our drag-and-drop editor. Tweak text, swap images, restyle blocks, or regenerate individual sections without touching the rest of the deck.",
   },
   {
-    q: "What export formats do you support?",
-    a: "Free users can share a public link to any presentation. Pro users can additionally export to high-fidelity PDF and PPTX, both ready for client delivery.",
+    q: "Can I export my deck?",
+    a: "Not yet. You edit the deck in the browser and present it as a slideshow from there.",
   },
   {
     q: "What happens to my free quota each month?",

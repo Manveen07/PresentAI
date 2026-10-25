@@ -119,9 +119,6 @@ export const Pricing = () => {
                 <CheckCircle2 className="w-4 h-4 text-white" /> Professional Brand Kits
               </li>
               <li className="flex items-center gap-3">
-                <CheckCircle2 className="w-4 h-4 text-white" /> High-fidelity PDF & PPTX export
-              </li>
-              <li className="flex items-center gap-3">
                 <CheckCircle2 className="w-4 h-4 text-white" /> Selective gen-rank priority
               </li>
             </ul>

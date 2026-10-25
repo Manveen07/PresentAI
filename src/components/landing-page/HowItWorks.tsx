@@ -13,8 +13,8 @@ export const HowItWorks = () => {
       icon: <Wand2 className="w-5 h-5 text-slate-400" />
     },
     {
-      title: "3. Customize & export",
-      description: "Fine-tune with our intuitive editor, then export to PDF or PPTX for a perfect pitch.",
+      title: "3. Customize & present",
+      description: "Fine-tune any slide in the drag-and-drop editor, then present it as a slideshow right in your browser.",
       icon: <Layout className="w-5 h-5 text-slate-400" />
     }
   ];
